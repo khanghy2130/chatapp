@@ -4,7 +4,7 @@ do {
 	name = prompt("Please enter your name");
 } while(name === "null");
 
-const socket = io("http://localhost:3000");
+const socket = io("/chat"); // namespace
 const usersList = document.getElementById("users-list");
 const messageContainer = document.getElementById('messages-container');
 const messageForm = document.getElementById('send-container');

@@ -1,17 +1,34 @@
+const express = require('express');
+const app = express();
+const server = require('http').Server(app);
 const socket = require("socket.io");
-const io = socket(3000);
+const io = socket(server);
 
+const ejs = require('ejs');
+
+app.set('view engine', 'ejs');
+app.use(express.static('public'));
+
+// app variables
 const usersList = {};
 
 
+app.get('/', function (req, res) {
+  	res.render('index');
+});
 
-// when a user connects, a socket is created for them. Set the eventListeners here
-io.on("connection", socket => {
-	
-	// when new user joins with their name
+
+var chat = io.of('chat'); // 'chat' namespace
+chat.on("connection", socket => {
 	socket.on('new-user-joins', name => {
 		usersList[socket.id] = name;
 		socket.broadcast.emit('announce-new-user', name);
+		updateUsersList();
+	});
+
+	socket.on('disconnect', () => {
+		socket.broadcast.emit('announce-left-user', usersList[socket.id]);
+		delete usersList[socket.id]; // remove from usersList
 		updateUsersList();
 	});
 
@@ -22,13 +39,6 @@ io.on("connection", socket => {
 			message: message
 		};
 		socket.broadcast.emit("chat-message", messageObject);
-		updateUsersList();
-	});
-
-	socket.on('disconnect', () => {
-		socket.broadcast.emit('announce-left-user', usersList[socket.id]);
-		delete usersList[socket.id]; // remove from usersList
-		updateUsersList();
 	});
 });
 
@@ -38,9 +48,10 @@ function updateUsersList(){
 	for (var id in usersList) {
 		names += usersList[id] + ", ";
 	}
-	io.sockets.emit('update-users-list', names);
+	io.of('chat').emit('update-users-list', names);
 }
 
+server.listen(3000);
 
 /*  EMIT KEYS
 client to server: 
