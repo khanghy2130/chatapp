@@ -1,3 +1,5 @@
+const PORT = process.env.PORT || 3000;
+
 const express = require('express');
 const app = express();
 const server = require('http').Server(app);
@@ -85,7 +87,7 @@ function updateUsersList(roomId){
 	io.of('chat').to(roomId).emit('update-users-list', names);
 }
 
-server.listen(3000);
+server.listen(PORT);
 
 /*  EMIT KEYS
 
