@@ -6,45 +6,30 @@
 	<script defer src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.5/socket.io.min.js"></script>
 	<script defer src="script.js"></script>
 
-	<style type="text/css">
-		* {
-			color: #f0f0f0;
-			background-color: #0f0f0f;
-			font-size: 20px;
-		}
-
-		body {
-			text-align: center;
-		}
-
-		#messages-container {
-			border: 2px white solid;
-			text-align: left;
-			display: inline-block;
-			overflow-y: scroll;
-			height: 70vh;
-			width: 60vw;
-			padding-left: 20px; 
-			padding-right: 20px; 
-			font-size: 25px;
-		}
-
-		#messages-container p:nth-child(2n) {
-			background-color: #1f1f1f;
-			margin: 0;
-			padding: 5px;
-		}
-	</style>
+	<link rel="stylesheet" href="/style.css">
 </head>
 <body>
 
-	<div id="users-list">None</div>
-	<div id="messages-container"></div>
-	<form id="send-container">
-		<label id="user-name"></label>
-		<input type="text" name="message" id="message-input">
-		<input type="submit">
-	</form>
+	<div id="join-room">
+		<h1>Enter name and room ID</h1>
+		<form id="join-room-form">
+			<input type="text" name="username" id="username-input" placeholder=" username" required><br>
+			<input type="text" name="roomID" id="room-id" placeholder=" room ID"required><br>
+			<input type="submit" value="Join room">
+		</form>
+	</div>
+
+	<div id="chatroom">
+		<h1 id="roomId-text">roomId</h1>
+		<p id="users-list">None</p>
+		<div id="messages-container"></div>
+		<form id="send-container">
+			<label id="username-text"></label>
+			<input type="text" name="message" id="message-input" required>
+			<input type="submit" value="Send">
+		</form>
+		<button id="leave-button">Leave Room</button>
+	</div>
 
 </body>
 </html>

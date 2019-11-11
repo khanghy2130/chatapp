@@ -1,0 +1,35 @@
+* {
+	color: #f0f0f0;
+	background-color: #0f0f0f;
+	font-size: 20px;
+}
+
+body {
+	text-align: center;
+}
+
+#chatroom {
+	display: none;
+}
+
+#messages-container {
+	border: 2px white solid;
+	text-align: left;
+	display: inline-block;
+	overflow-y: scroll;
+	height: 60vh;
+	width: 60vw;
+	padding-left: 20px; 
+	padding-right: 20px; 
+	font-size: 25px;
+}
+
+#messages-container p:nth-child(2n) {
+	background-color: #1f1f1f;
+	margin: 0;
+	padding: 5px;
+}
+
+h1 {
+	font-size: 25px;
+}

@@ -1,27 +1,43 @@
-// get the name first before running anything else
-var name;
-do {
-	name = prompt("Please enter your name");
-} while(name === "null");
-
 const socket = io("/chat"); // namespace
-const usersList = document.getElementById("users-list");
-const messageContainer = document.getElementById('messages-container');
-const messageForm = document.getElementById('send-container');
-const messageInput = document.getElementById("message-input");
-const userName = document.getElementById("user-name");
+
+// join room
+const joinRoomForm = document.getElementById("join-room-form"),
+	usernameInput = document.getElementById("username-input"),
+	roomIdInput = document.getElementById("room-id");
+
+// chat room
+const usersList = document.getElementById("users-list"),
+	messageContainer = document.getElementById('messages-container'),
+	messageForm = document.getElementById('send-container'),
+	messageInput = document.getElementById("message-input"),
+	usernameText = document.getElementById("username-text"),
+	roomIdText = document.getElementById("roomId-text");
 
 
 // initialize
-userName.innerText = name;
-appendMessage("green", 'You joined.');
-socket.emit("new-user-joins", name);
+socket.emit("add-user");
+loadPage('join-room');
 
-// recieves data about who joined
-socket.on('update-users-list', names => {
-	usersList.innerText = names;
+
+// ------------------ JOIN ROOM -----------------
+
+joinRoomForm.addEventListener('submit', event => {
+	event.preventDefault(); // stop the form from submiting
+
+	socket.emit("join-room", usernameInput.value, roomIdInput.value);
 });
 
+// switch to chat room when joined
+socket.on('join-room', (name, roomId) => {
+	loadPage("chatroom");
+	usernameText.innerText = name;
+	roomIdText.innerText = "Room ID: " + roomId;
+	appendMessage("green", 'You joined.');
+});
+
+
+
+// ------------------ CHAT ROOM --------------------
 
 
 // when click submit
@@ -30,12 +46,22 @@ messageForm.addEventListener('submit', event => {
 
 	// send message value to server
 	const message = messageInput.value;
-	socket.emit("send-chat-message", message);
+	socket.emit("chat-message", message);
 	appendMessage("#f0f0f0", "You: " + message);
 
 	messageInput.value = ''; // clear message input box
 });
 
+// when click leave room
+document.getElementById("leave-button").addEventListener("click", () => {
+	loadPage('join-room');
+	socket.emit('leave-room');
+});
+
+// recieves data about who joined
+socket.on('update-users-list', names => {
+	usersList.innerText = "Users in this room: " + names.substring(0, names.length - 2);
+});
 
 socket.on('announce-new-user', name => {
 	appendMessage("green", name + " joined.");
@@ -54,6 +80,7 @@ socket.on('chat-message', messageObject => {
 });
 
 
+
 function appendMessage(color, message) {
 	const messageElement = document.createElement('p');
 	messageElement.style.color = color;
@@ -62,4 +89,23 @@ function appendMessage(color, message) {
 
 	// scroll down to bottom
 	messageContainer.scrollTop = messageContainer.scrollHeight;
+}
+
+function loadPage(page) {
+	if (page === "join-room"){
+		document.getElementById("chatroom").style.display = "none";
+		document.getElementById("join-room").style.display = "block";
+		roomIdInput.value = "";
+	} 
+	// chat room
+	else {
+		document.getElementById("join-room").style.display = "none";
+		document.getElementById("chatroom").style.display = "block";
+
+		// clear messages
+		while(messageContainer.firstChild){
+			messageContainer.removeChild(messageContainer.firstChild);
+		}
+		messageInput.value = "";
+	}
 }
