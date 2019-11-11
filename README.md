@@ -1,4 +1,4 @@
-#ChatApp with Socket.io
+# ChatApp with Socket.io
 
 The project is live at http://project02-chatapp.herokuapp.com
 
