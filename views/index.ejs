@@ -7,27 +7,39 @@
 	<script defer src="script.js"></script>
 
 	<link rel="stylesheet" href="/style.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
 
 	<div id="join-room">
-		<h1>Enter name and room ID</h1>
+		<div id="text-shadow-class">
+			<h1>Enter name and room ID</h1>
+			<p>If the room doesn't exist, it will be created.</p>
+		</div>
+
 		<form id="join-room-form">
 			<input type="text" name="username" id="username-input" placeholder=" username" required><br>
 			<input type="text" name="roomID" id="room-id" placeholder=" room ID"required><br>
-			<input type="submit" value="Join room">
+			<button>Join room</button>
 		</form>
 	</div>
 
 	<div id="chatroom">
-		<h1 id="roomId-text">roomId</h1>
-		<p id="users-list">None</p>
-		<div id="messages-container"></div>
-		<form id="send-container">
-			<label id="username-text"></label>
-			<input type="text" name="message" id="message-input" required>
-			<input type="submit" value="Send">
-		</form>
+
+		<div id="text-shadow-class">
+			<p id="roomId-text"></p>
+			<p id="users-list"></p>
+			<p id="username-text"></p>
+		</div>
+
+		<div id=chatbox>
+			<div id="messages-container"></div>
+			<form id="send-container">
+				<input type="text" name="message" id="message-input" required>
+				<button>Send</button>
+			</form>
+		</div>
+		
 		<button id="leave-button">Leave Room</button>
 	</div>
 

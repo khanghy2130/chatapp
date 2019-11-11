@@ -1,15 +1,62 @@
+:root {
+  --red-color: #f5220f;
+  --blue-color: #09bfe8;
+  --dark-color: #1a1a1a;
+  --light-color: #ededed;
+}
+
 * {
-	color: #f0f0f0;
-	background-color: #0f0f0f;
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+
 	font-size: 20px;
+	font-family: Arial;
+	color: var(--light-color);
 }
 
 body {
 	text-align: center;
+	padding-left: 10vw;
+	padding-right: 10vw;
+	height: 100vh;
+
+	background: rgb(191,89,10);
+background: -moz-linear-gradient(186deg, rgba(191,89,10,1) 15%, rgba(19,19,19,1) 97%);
+background: -webkit-linear-gradient(186deg, rgba(191,89,10,1) 15%, rgba(19,19,19,1) 97%);
+background: linear-gradient(186deg, rgba(191,89,10,1) 15%, rgba(19,19,19,1) 97%);
+filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#bf590a",endColorstr="#131313",GradientType=1);
 }
+
+#join-room {
+	padding-top: 35vh;
+}
+
+#join-room input {
+	width: 70vw;
+	max-width: 300px;
+}
+
+
 
 #chatroom {
 	display: none;
+	padding-top: 5vh;
+}
+
+#chatroom input {
+	width: 60%;
+}
+
+#text-shadow-class {
+	text-shadow: 2px 2px 3px black;
+	margin-bottom: 10px;
+}
+
+#chatbox {
+	display:inline-block;
+	width: 80vw;
+	max-width: 500px;
 }
 
 #messages-container {
@@ -17,19 +64,91 @@ body {
 	text-align: left;
 	display: inline-block;
 	overflow-y: scroll;
+	overflow-x: hidden;
+
 	height: 60vh;
-	width: 60vw;
+	width: 100%;
 	padding-left: 20px; 
 	padding-right: 20px; 
 	font-size: 25px;
 }
 
-#messages-container p:nth-child(2n) {
-	background-color: #1f1f1f;
-	margin: 0;
-	padding: 5px;
+.self-msg {
+	border-radius: 20px;
+	width: 70%;
+	padding: 10px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+
+	color: var(--light-color);
+	background-color: var(--dark-color);
+	margin-left: 30%;
+}
+
+.other-msg {
+	border-radius: 20px;
+	width: 70%;
+	padding: 10px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+
+	color: var(--dark-color);
+	background-color: var(--light-color);
+	margin-left: 0;
+}
+
+.user-join {
+	width: 100%;
+	text-align: center;
+	margin-top: 5px;
+	margin-bottom: 5px;
+
+	color: #35ff26;
+}
+
+.user-leave {
+	width: 100%;
+	text-align: center;
+	margin-top: 5px;
+	margin-bottom: 5px;
+
+	color: #dfdfdf;
+}
+
+
+#leave-button {
+	position: fixed;
+	bottom: 5vh;
+	right: 10vw;
+	background-color: var(--red-color);
+	color: var(--light-color);
 }
 
 h1 {
 	font-size: 25px;
 }
+
+form {
+	margin: 10px;
+}
+
+input {
+	background-color: var(--dark-color);
+	margin: 7px;
+	padding: 5px;
+}
+
+button {
+	border: none;
+	border-radius: 5px;
+	padding: 5px;
+	margin: 10px;
+	background-color: var(--blue-color);
+	color: var(--dark-color);
+	box-shadow: 0px 0px 5px black;
+}
+button:hover {
+	cursor: pointer;
+	box-shadow: 0px 0px 10px black;
+}
+

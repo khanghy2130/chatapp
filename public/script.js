@@ -30,9 +30,9 @@ joinRoomForm.addEventListener('submit', event => {
 // switch to chat room when joined
 socket.on('join-room', (name, roomId) => {
 	loadPage("chatroom");
-	usernameText.innerText = name;
+	usernameText.innerText = "Your username: " + name;
 	roomIdText.innerText = "Room ID: " + roomId;
-	appendMessage("green", 'You joined.');
+	appendMessage("user-join", 'You joined.');
 });
 
 
@@ -47,7 +47,7 @@ messageForm.addEventListener('submit', event => {
 	// send message value to server
 	const message = messageInput.value;
 	socket.emit("chat-message", message);
-	appendMessage("#f0f0f0", "You: " + message);
+	appendMessage("self-msg", message);
 
 	messageInput.value = ''; // clear message input box
 });
@@ -60,30 +60,32 @@ document.getElementById("leave-button").addEventListener("click", () => {
 
 // recieves data about who joined
 socket.on('update-users-list', names => {
-	usersList.innerText = "Users in this room: " + names.substring(0, names.length - 2);
+	usersList.innerText = "Users in room: " + names.substring(0, names.length - 2);
 });
 
 socket.on('announce-new-user', name => {
-	appendMessage("green", name + " joined.");
+	appendMessage("user-join", name + " joined.");
 });
 
 socket.on('announce-left-user', name => {
-	appendMessage("red", name + " left.");
+	appendMessage("user-leave", name + " left.");
 });
 
 
 socket.on('chat-message', messageObject => {
 	appendMessage(
-		"#f0f0f0",
+		"other-msg",
 		`${messageObject.name}: ${messageObject.message}`
 	);
 });
 
 
 
-function appendMessage(color, message) {
+function appendMessage(className, message) {
 	const messageElement = document.createElement('p');
-	messageElement.style.color = color;
+
+	// set class (other-msg, self-msg, user-join, user-leave)
+	messageElement.classList.add(className);
 	messageElement.innerText = message;
 	messageContainer.append(messageElement);
 
