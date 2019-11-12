@@ -22,10 +22,10 @@ body {
 	height: 100vh;
 
 	background: rgb(191,89,10);
-background: -moz-linear-gradient(186deg, rgba(191,89,10,1) 15%, rgba(19,19,19,1) 97%);
-background: -webkit-linear-gradient(186deg, rgba(191,89,10,1) 15%, rgba(19,19,19,1) 97%);
-background: linear-gradient(186deg, rgba(191,89,10,1) 15%, rgba(19,19,19,1) 97%);
-filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#bf590a",endColorstr="#131313",GradientType=1);
+	background: -moz-linear-gradient(186deg, rgba(191,89,10,1) 15%, rgba(19,19,19,1) 97%);
+	background: -webkit-linear-gradient(186deg, rgba(191,89,10,1) 15%, rgba(19,19,19,1) 97%);
+	background: linear-gradient(186deg, rgba(191,89,10,1) 15%, rgba(19,19,19,1) 97%);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#bf590a",endColorstr="#131313",GradientType=1);
 }
 
 #join-room {
@@ -46,6 +46,7 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#bf590a",endCo
 
 #chatroom input {
 	width: 60%;
+	margin: 0;
 }
 
 #text-shadow-class {
@@ -117,9 +118,7 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#bf590a",endCo
 
 
 #leave-button {
-	position: fixed;
-	bottom: 5vh;
-	right: 10vw;
+	
 	background-color: var(--red-color);
 	color: var(--light-color);
 }
