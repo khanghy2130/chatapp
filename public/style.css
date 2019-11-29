@@ -17,8 +17,6 @@
 
 body {
 	text-align: center;
-	padding-left: 10vw;
-	padding-right: 10vw;
 	height: 100vh;
 
 	background: rgb(191,89,10);
@@ -28,16 +26,50 @@ body {
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#bf590a",endColorstr="#131313",GradientType=1);
 }
 
+/* JOIN ROOM (MENU) */
+
 #join-room {
-	padding-top: 35vh;
+	margin-top: 50px;
 }
 
-#join-room input {
-	width: 70vw;
-	max-width: 300px;
+#rooms-list {
+	display: inline-block;
+	margin: 10px;
+	overflow-x: hidden;
+	overflow-y: scroll;
+	height: 60vh;
+	width: 93%;
+	max-width: 600px;
+
+	background: rgba(0,0,0, 0.3);
+	
+}
+
+/* each room panel */
+.room-on-list {
+	transition: 0.3s;
+	cursor: pointer;
+	width: 100%;
+	padding: 10px 5px;
+
+	border-bottom: solid 3px #342222;
+	background-color: #34eb4f;
+}
+.room-on-list:hover {
+	background-color : #2bc442;
+}
+
+.room-on-list h4 {
+	display: inline-block;
+	color: var(--dark-color);
+
+	padding: 0 10px;
+	font-size: 24px;
 }
 
 
+
+/* CHATROOM */
 
 #chatroom {
 	display: none;
@@ -117,14 +149,13 @@ body {
 }
 
 
-#leave-button {
-	
+.red-button {
 	background-color: var(--red-color);
 	color: var(--light-color);
 }
 
 h1 {
-	font-size: 25px;
+	font-size: 30px;
 }
 
 form {
@@ -140,10 +171,11 @@ input {
 button {
 	border: none;
 	border-radius: 5px;
-	padding: 5px;
+	padding: 10px;
 	margin: 10px;
-	background-color: var(--blue-color);
 	color: var(--dark-color);
+	font-weight: bold;
+	background-color: var(--blue-color);
 	box-shadow: 0px 0px 5px black;
 }
 button:hover {

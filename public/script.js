@@ -5,6 +5,12 @@ const joinRoomForm = document.getElementById("join-room-form"),
 	usernameInput = document.getElementById("username-input"),
 	roomIdInput = document.getElementById("room-id");
 
+// create room
+
+
+// join private room
+
+
 // chat room
 const usersList = document.getElementById("users-list"),
 	messageContainer = document.getElementById('messages-container'),
@@ -12,6 +18,7 @@ const usersList = document.getElementById("users-list"),
 	messageInput = document.getElementById("message-input"),
 	usernameText = document.getElementById("username-text"),
 	roomIdText = document.getElementById("roomId-text");
+
 
 
 // initialize
@@ -94,6 +101,7 @@ function appendMessage(className, message) {
 }
 
 function loadPage(page) {
+	// switch to and setup for the target page
 	if (page === "join-room"){
 		document.getElementById("chatroom").style.display = "none";
 		document.getElementById("join-room").style.display = "block";

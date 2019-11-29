@@ -12,16 +12,40 @@
 <body>
 
 	<div id="join-room">
+
 		<div id="text-shadow-class">
-			<h1>Enter name and room ID</h1>
-			<p>If the room doesn't exist, it will be created.</p>
+			<h1>Rooms list</h1>
 		</div>
 
+		<div id="rooms-list">
+			<div class="room-on-list">
+				<h4 class="room-name-on-list">Room name</h4>
+				<h4 class="users-amount-on-list">10 user(s)</h4>
+				<h4 class="room-name-on-list">Public</h4>
+			</div>
+			<div class="room-on-list">
+				<h4 class="room-name-on-list">Room name</h4>
+				<h4 class="users-amount-on-list">10 user(s)</h4>
+				<h4 class="room-name-on-list">Public</h4>
+			</div>
+		</div>
+
+		<div>
+			<button>Create Room</button>
+			<button>Refresh</button>
+		</div>
+		
+
+
+
+		<!--
 		<form id="join-room-form">
 			<input type="text" name="username" id="username-input" placeholder=" username" required><br>
 			<input type="text" name="roomID" id="room-id" placeholder=" room ID"required><br>
 			<button>Join room</button>
+
 		</form>
+		-->
 	</div>
 
 	<div id="chatroom">
@@ -40,7 +64,7 @@
 			</form>
 		</div>
 		<br>
-		<button id="leave-button">Leave Room</button>
+		<button class="red-button">Leave Room</button>
 	</div>
 
 </body>
