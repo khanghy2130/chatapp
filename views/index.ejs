@@ -31,21 +31,41 @@
 		</div>
 
 		<div>
+			<input type="text" name="username" id="username-input" placeholder="Your username" required>
+		</div>
+
+		<div>
 			<button>Create Room</button>
 			<button>Refresh</button>
 		</div>
-		
+	</div>
 
 
+	<div id="create-room">
+		<div id="text-shadow-class">
+			<h1>Create Room</h1>	
+		</div>
 
-		<!--
-		<form id="join-room-form">
-			<input type="text" name="username" id="username-input" placeholder=" username" required><br>
-			<input type="text" name="roomID" id="room-id" placeholder=" room ID"required><br>
-			<button>Join room</button>
+		<form id="create-room-form">
+			<input type="text" name="roomName" id="room-name-input" placeholder="Room Name" required><br>
 
+			<label>Require Password</label>
+			<input type="checkbox" name="private" id="private-input"><br>
+
+			<input type="text" name="roomPassword" id="create-room-password-input" placeholder="Room Password" required><br>
+			<button>Create and join room</button>
 		</form>
-		-->
+	</div>
+
+	<div id="join-private-room">
+		<div id="text-shadow-class">
+			<h1>Joining room: Super duper awesome room!!!</h1>	
+		</div>
+
+		<form id="join-private-room-form">
+			<input type="text" name="roomPassword" id="room-password-input" placeholder="Room Password"required><br>
+			<button>Join room</button>
+		</form>
 	</div>
 
 	<div id="chatroom">
@@ -64,7 +84,7 @@
 			</form>
 		</div>
 		<br>
-		<button class="red-button">Leave Room</button>
+		<button class="leave-button">Leave Room</button>
 	</div>
 
 </body>

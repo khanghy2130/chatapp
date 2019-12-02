@@ -1,18 +1,20 @@
 const socket = io("/chat"); // namespace
 
+const leaveButtons = document.getElementsByClassName("leave-button");
+
 // join room
-const joinRoomForm = document.getElementById("join-room-form"),
-	usernameInput = document.getElementById("username-input"),
-	roomIdInput = document.getElementById("room-id");
+const joinRoomPage = document.getElementById("join-room"),
+	usernameInput = document.getElementById("username-input");
 
 // create room
-
+const createRoomPage = document.getElementById("create-room");
 
 // join private room
-
+const joinPrivateRoomPage = document.getElementById("join-private-room");
 
 // chat room
-const usersList = document.getElementById("users-list"),
+const chatRoomPage = document.getElementById("chatroom"),
+	usersList = document.getElementById("users-list"),
 	messageContainer = document.getElementById('messages-container'),
 	messageForm = document.getElementById('send-container'),
 	messageInput = document.getElementById("message-input"),
@@ -21,18 +23,52 @@ const usersList = document.getElementById("users-list"),
 
 
 
-// initialize
+// INITIALIZE
 socket.emit("add-user");
 loadPage('join-room');
+
+// leave buttons
+for (let i = 0; i < leaveButtons.length; i++){
+	leaveButtons[i].addEventListener("click", () => {
+		loadPage('join-room');
+		socket.emit('leave-room');
+	});
+}
 
 
 // ------------------ JOIN ROOM -----------------
 
+// deleted
+/*
 joinRoomForm.addEventListener('submit', event => {
 	event.preventDefault(); // stop the form from submiting
 
 	socket.emit("join-room", usernameInput.value, roomIdInput.value);
-});
+});*/
+
+
+// add eventlistener to newly created room panels
+function createRoomPanel(){
+	
+}
+
+function refreshRoomsList(){
+	
+}
+
+function enteredName(){return usernameInput.reportValidity();}
+
+// ------------------ CREATE ROOM --------------------
+
+
+
+
+// ------------------ JOIN PRIVATE ROOM --------------------
+
+
+
+
+// ------------------ CHAT ROOM --------------------
 
 // switch to chat room when joined
 socket.on('join-room', (name, roomId) => {
@@ -42,12 +78,7 @@ socket.on('join-room', (name, roomId) => {
 	appendMessage("user-join", 'You joined.');
 });
 
-
-
-// ------------------ CHAT ROOM --------------------
-
-
-// when click submit
+// when click send message
 messageForm.addEventListener('submit', event => {
 	event.preventDefault(); // stop the form from submiting
 
@@ -57,12 +88,6 @@ messageForm.addEventListener('submit', event => {
 	appendMessage("self-msg", message);
 
 	messageInput.value = ''; // clear message input box
-});
-
-// when click leave room
-document.getElementById("leave-button").addEventListener("click", () => {
-	loadPage('join-room');
-	socket.emit('leave-room');
 });
 
 // recieves data about who joined
@@ -87,7 +112,6 @@ socket.on('chat-message', messageObject => {
 });
 
 
-
 function appendMessage(className, message) {
 	const messageElement = document.createElement('p');
 
@@ -101,21 +125,37 @@ function appendMessage(className, message) {
 }
 
 function loadPage(page) {
-	// switch to and setup for the target page
-	if (page === "join-room"){
-		document.getElementById("chatroom").style.display = "none";
-		document.getElementById("join-room").style.display = "block";
-		roomIdInput.value = "";
-	} 
-	// chat room
-	else {
-		document.getElementById("join-room").style.display = "none";
-		document.getElementById("chatroom").style.display = "block";
+	// hide everything
+	joinRoomPage.style.display = "none";
+	createRoomPage.style.display = "none";
+	joinPrivateRoomPage.style.display = "none";
+	chatRoomPage.style.display = "none";
 
-		// clear messages
-		while(messageContainer.firstChild){
-			messageContainer.removeChild(messageContainer.firstChild);
-		}
-		messageInput.value = "";
+	// switch to and setup for the target page
+	switch (page) {
+		case "join-room":
+			joinRoomPage.style.display = "block";
+			roomIdInput.value = "";
+			break;
+
+		case "create-room":
+			createRoomPage.style.display = "block";
+			// reset
+			break;
+
+		case "join-private-room":
+			joinPrivateRoomPage.style.display = "block";
+			// reset
+			break;
+
+		case "chatroom":
+			chatRoomPage.style.display = "block";
+
+			// clear messages
+			while(messageContainer.firstChild){
+				messageContainer.removeChild(messageContainer.firstChild);
+			}
+			messageInput.value = "";
+			break;
 	}
 }

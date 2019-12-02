@@ -29,7 +29,7 @@ body {
 /* JOIN ROOM (MENU) */
 
 #join-room {
-	margin-top: 50px;
+	padding-top: 5vh;
 }
 
 #rooms-list {
@@ -52,7 +52,7 @@ body {
 	width: 100%;
 	padding: 10px 5px;
 
-	border-bottom: solid 3px #342222;
+	border-bottom: solid 3px var(--dark-color);
 	background-color: #34eb4f;
 }
 .room-on-list:hover {
@@ -67,6 +67,11 @@ body {
 	font-size: 24px;
 }
 
+/* CREATE ROOM & JOIN PRIVATE ROOM */
+
+#create-room, #join-private-room {
+	padding-top: 30vh;
+}
 
 
 /* CHATROOM */
@@ -149,7 +154,7 @@ body {
 }
 
 
-.red-button {
+.leave-button {
 	background-color: var(--red-color);
 	color: var(--light-color);
 }
@@ -177,6 +182,7 @@ button {
 	font-weight: bold;
 	background-color: var(--blue-color);
 	box-shadow: 0px 0px 5px black;
+	outline: none;
 }
 button:hover {
 	cursor: pointer;

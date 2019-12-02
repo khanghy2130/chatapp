@@ -12,8 +12,10 @@ app.set('view engine', 'ejs');
 app.use(express.static('public'));
 
 // APP VARIABLES
-// object with userID as key for user object {name, roomID}
+// object with userID as key, {name, roomID}
 const usersList = {}; 
+// roomID as key, {roomName, isPrivate, password}
+const roomsList = {}; 
 
 
 app.get('/*', function (req, res) {
@@ -77,6 +79,7 @@ chat.on("connection", socket => {
 });
 
 
+// update the list of users in a room
 function updateUsersList(roomId){
 	var names = '';
 	for (var id in usersList) {
@@ -86,6 +89,24 @@ function updateUsersList(roomId){
 	}
 	io.of('chat').to(roomId).emit('update-users-list', names);
 }
+
+// add newly created room to rooms list
+
+
+// when a user leaves, check if the room is empty then remove it from rooms list
+
+
+// to create roomID
+function create_UUID(){
+    var dt = new Date().getTime();
+    var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        var r = (dt + Math.random()*16)%16 | 0;
+        dt = Math.floor(dt/16);
+        return (c=='x' ? r :(r&0x3|0x8)).toString(16);
+    });
+    return uuid;
+}
+
 
 server.listen(PORT);
 
