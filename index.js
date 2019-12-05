@@ -14,7 +14,7 @@ app.use(express.static('public'));
 // APP VARIABLES
 // object with userID as key, {name, roomID}
 const usersList = {}; 
-// roomID as key, {roomName, isPrivate, password}
+// roomID as key, {roomName, password (null => is public)}
 const roomsList = {}; 
 
 
@@ -30,42 +30,52 @@ chat.on("connection", socket => {
 	socket.on('add-user', () => {
 		usersList[socket.id] = {
 			name: null,
-			roomId: null
+			roomID: null
 		};
 	});
 
 	socket.on('disconnect', () => {
-		var roomId = usersList[socket.id].roomId;
+		var roomID = usersList[socket.id].roomID;
 
 		// announce leaving if in a room
-		if (roomId){
-			socket.to(roomId).emit('announce-left-user', usersList[socket.id].name);
-			usersList[socket.id].roomId = null;
-			updateUsersList(roomId);
+		if (roomID){
+			usersList[socket.id].roomID = null;
+			socket.to(roomID).emit('announce-left-user', usersList[socket.id].name);
+			updateUsersList(roomID);
+			checkRemoveRoom(roomID);
 		}
 		
 		delete usersList[socket.id]; // remove from usersList
 	});
 
-	// join a room (assign the roomID)
-	socket.on('join-room', (name, roomId) => {
-		usersList[socket.id].name = name;
-		usersList[socket.id].roomId = roomId;
-
-		socket.join(roomId);
-		socket.emit('join-room', name, roomId); // notify the client
-		socket.to(roomId).emit('announce-new-user', usersList[socket.id].name);
-		updateUsersList(usersList[socket.id].roomId);
+	socket.on('refresh-rooms-list', () => {
+		refreshRoomsList(socket);
 	});
 
-	// announce leaving, update users list and remove roomId from user object
-	socket.on('leave-room', () => {
-		var roomId = usersList[socket.id].roomId;
+	socket.on('create-room', (name, roomName, roomPassword) => {
+		// create the room (with return value of roomID)
+		let roomID = creatingRoom(roomName, roomPassword);
 
-		socket.to(roomId).emit('announce-left-user', usersList[socket.id].name);
-		socket.leave(roomId);
-		usersList[socket.id].roomId = null;
-		updateUsersList(roomId);
+		// join the room
+		joiningRoom(socket, name, roomID, roomPassword);
+	});
+
+	socket.on('join-room', (name, roomID, roomPassword) => {
+		joiningRoom(socket, name, roomID, roomPassword);
+	});
+
+	// announce leaving, update users list and remove roomID from user object
+	socket.on('leave-room', () => {
+		var roomID = usersList[socket.id].roomID;
+
+		// if is actually in a room
+		if (roomID){
+			socket.leave(roomID);
+			usersList[socket.id].roomID = null;
+			socket.to(roomID).emit('announce-left-user', usersList[socket.id].name);
+			updateUsersList(roomID);
+			checkRemoveRoom(roomID);
+		}
 	});
 
 	// when server recieves message from this user
@@ -74,24 +84,96 @@ chat.on("connection", socket => {
 			name: usersList[socket.id].name, 
 			message: message
 		};
-		socket.to(usersList[socket.id].roomId).emit("chat-message", messageObject);
+		socket.to(usersList[socket.id].roomID).emit("chat-message", messageObject);
 	});
 });
 
 
-// update the list of users in a room
-function updateUsersList(roomId){
+
+function refreshRoomsList(socket){
+	let roomIDs = Object.keys(roomsList);
+
+	// each is {roomID, roomName, usersAmount, publicity}
+	let data = roomIDs.map(roomID => {
+		// count number of users in this room
+		let ua = 0;
+		for (var id in usersList) {
+			if (usersList[id].roomID === roomID){
+				ua++;
+			}
+		}
+
+		return {
+			roomID: roomID,
+			roomName: "Name: " + roomsList[roomID].roomName,
+			publicity: (roomsList[roomID].roomPassword) ? "Private" : "Public",
+			usersAmount: ua + " user(s)"
+		}
+	});
+	socket.emit('refresh-rooms-list', data);
+}
+
+// create the room then return its roomID
+function creatingRoom(roomName, roomPassword){
+	let roomID = create_UUID();
+	// while this key is taken
+	while (roomsList[roomID]){
+		roomID = create_UUID();
+	}
+
+	roomsList[roomID] = {
+		roomName: roomName,
+		roomPassword: roomPassword
+	};
+
+	return roomID;
+}
+
+// run to check and remove a room if no more users inside
+function checkRemoveRoom(roomID){
+	// quit if there is someone in this room
+	for (var id in usersList) {
+		if (usersList[id].roomID === roomID){
+			return;
+		}
+	}
+
+	delete roomsList[roomID]; // remove room from list because it's empty
+}
+
+// join a room, if room is private then check password
+function joiningRoom (socket, name, roomID, roomPassword){
+	// if the room exists
+	if (!roomsList[roomID]){
+		socket.emit('room-not-found');
+		return;
+	}
+
+	// this room requires password AND password doesn't match?
+	if (roomsList[roomID].roomPassword && roomsList[roomID].roomPassword !== roomPassword){
+		socket.emit('wrong-password');
+		return;
+	}
+
+	usersList[socket.id].name = name;
+	usersList[socket.id].roomID = roomID;
+
+	socket.join(roomID);
+	socket.emit('join-room', name, roomID); // notify the client
+	socket.to(roomID).emit('announce-new-user', usersList[socket.id].name);
+	updateUsersList(usersList[socket.id].roomID);
+}
+
+// get update of the list of users in a room for that room
+function updateUsersList(roomID){
 	var names = '';
 	for (var id in usersList) {
-		if (usersList[id].roomId === roomId){
+		if (usersList[id].roomID === roomID){
 			names += usersList[id].name + ", ";
 		}
 	}
-	io.of('chat').to(roomId).emit('update-users-list', names);
+	io.of('chat').to(roomID).emit('update-users-list', names);
 }
-
-// add newly created room to rooms list
-
 
 // when a user leaves, check if the room is empty then remove it from rooms list
 
@@ -115,12 +197,28 @@ server.listen(PORT);
 JOIN ROOM:
 	client to server: 
 		add-user
+		refresh-rooms-list
 		join-room
 		leave-room
 
 	server to client: 
+		refresh-rooms-list (sending back data)
 		join-room  (done joining a room)
+		room-not-found
 
+CREATE ROOM:
+	client to server: 
+		create-room
+	server to client:
+		join-room
+
+JOIN PRIVATE ROOM:
+	client to server: 
+		join-room
+	server to client:
+		wrong-password
+		join-room
+		room-not-found
 
 CHAT ROOM:
 	client to server: 

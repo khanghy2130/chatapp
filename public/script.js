@@ -4,13 +4,24 @@ const leaveButtons = document.getElementsByClassName("leave-button");
 
 // join room
 const joinRoomPage = document.getElementById("join-room"),
-	usernameInput = document.getElementById("username-input");
+	roomsContainer = document.getElementById("rooms-list"),
+	usernameInput = document.getElementById("username-input"),
+	createBtn = document.getElementById("create-btn"),
+	refreshBtn = document.getElementById("refresh-btn");
 
 // create room
-const createRoomPage = document.getElementById("create-room");
+const createRoomPage = document.getElementById("create-room"),
+	createRoomForm = document.getElementById("create-room-form"),
+	privateCheckbox = document.getElementById("private-input"),
+	roomNameInput = document.getElementById("room-name-input"),
+	createRoomPasswordInput = document.getElementById("create-room-password-input");
 
 // join private room
-const joinPrivateRoomPage = document.getElementById("join-private-room");
+const joinPrivateRoomPage = document.getElementById("join-private-room"),
+	privateRoomText = document.getElementById("private-room-text"),
+	joinPrivateRoomForm = document.getElementById("join-private-room-form"),
+	roomPasswordInput = document.getElementById("room-password-input"),
+	incorrectMessage = document.getElementById("incorrect-message");
 
 // chat room
 const chatRoomPage = document.getElementById("chatroom"),
@@ -21,7 +32,7 @@ const chatRoomPage = document.getElementById("chatroom"),
 	usernameText = document.getElementById("username-text"),
 	roomIdText = document.getElementById("roomId-text");
 
-
+let privateRoomID; // used to hold selected roomID
 
 // INITIALIZE
 socket.emit("add-user");
@@ -30,51 +41,104 @@ loadPage('join-room');
 // leave buttons
 for (let i = 0; i < leaveButtons.length; i++){
 	leaveButtons[i].addEventListener("click", () => {
-		loadPage('join-room');
+		// server side will handle if user is in a room or not
 		socket.emit('leave-room');
+		loadPage('join-room');
 	});
 }
 
 
 // ------------------ JOIN ROOM -----------------
 
-// deleted
-/*
-joinRoomForm.addEventListener('submit', event => {
-	event.preventDefault(); // stop the form from submiting
+createBtn.addEventListener("click", () => {
+	if (enteredName()) {
+		loadPage("create-room");
+	}
+});
 
-	socket.emit("join-room", usernameInput.value, roomIdInput.value);
-});*/
+// refresh rooms list
+refreshBtn.addEventListener('click', () => {
+	socket.emit("refresh-rooms-list"); // this line is also in loadPage()
+});
+// receiving rooms list data
+socket.on('refresh-rooms-list', roomsList => {
+	// remove old contents
+	while(roomsContainer.firstChild){
+		roomsContainer.removeChild(roomsContainer.firstChild);
+	}
 
+	// room is {roomID, roomName, usersAmount, publicity}
+	roomsList.forEach(room => {
+		let roomPanel = document.createElement("div");
+		roomPanel.classList.add("room-on-list");
+		
+		// appending three h4's
+		roomPanel.innerHTML = `<h4>${room.roomName}</h4><h4>${room.usersAmount}</h4><h4>${room.publicity}</h4>`;
 
-// add eventlistener to newly created room panels
-function createRoomPanel(){
-	
-}
+		// when clicked
+		roomPanel.addEventListener("click", e => {
+			if (enteredName()) {
+				// accessing room.roomID by closure
+				// public or private?
+				if (room.publicity === "Public"){
+					socket.emit("join-room", usernameInput.value, room.roomID, null);
+				}
+				else {
+					// set room name text
+					privateRoomText.innerText = "Joining: " + room.roomName;
+					privateRoomID = room.roomID;
+					loadPage("join-private-room");
+				}
+			}
+		});
 
-function refreshRoomsList(){
-	
-}
+		roomsContainer.appendChild(roomPanel);
+	});
+
+	// if there is no room
+	if (roomsList.length === 0){
+		roomsContainer.innerHTML = "<p>No room exists at the moment.</p>";
+	}
+});
 
 function enteredName(){return usernameInput.reportValidity();}
 
 // ------------------ CREATE ROOM --------------------
 
+privateCheckbox.addEventListener("click", e => {
+	createRoomPasswordInput.disabled = createRoomPasswordInput.hidden = !e.target.checked;
+});
 
+// clicking create
+createRoomForm.addEventListener("submit", e => {
+	e.preventDefault();
 
+	let roomPass = (privateCheckbox.checked) ? createRoomPasswordInput.value : null ;
+	socket.emit("create-room", usernameInput.value, roomNameInput.value, roomPass);
+});
 
 // ------------------ JOIN PRIVATE ROOM --------------------
 
+joinPrivateRoomForm.addEventListener("submit", e => {
+	e.preventDefault();
 
+	socket.emit("join-room", usernameInput.value, privateRoomID, roomPasswordInput.value);
+});
+socket.on("wrong-password", () => {
+	incorrectMessage.hidden = false;
+});
 
+socket.on("room-not-found", () => {
+	alert("Room not found.");
+});
 
 // ------------------ CHAT ROOM --------------------
 
-// switch to chat room when joined
-socket.on('join-room', (name, roomId) => {
+// when joined  //////////// get room info (name, pass)
+socket.on('join-room', (name, roomID) => {
 	loadPage("chatroom");
 	usernameText.innerText = "Your username: " + name;
-	roomIdText.innerText = "Room ID: " + roomId;
+	roomIdText.innerText = "Room ID: " + roomID;
 	appendMessage("user-join", 'You joined.');
 });
 
@@ -135,17 +199,25 @@ function loadPage(page) {
 	switch (page) {
 		case "join-room":
 			joinRoomPage.style.display = "block";
-			roomIdInput.value = "";
+
+			socket.emit("refresh-rooms-list"); // refresh
 			break;
 
 		case "create-room":
 			createRoomPage.style.display = "block";
+
 			// reset
+			roomNameInput.value = createRoomPasswordInput.value = "";
+			createRoomPasswordInput.disabled = !(privateCheckbox.checked = false);
+			createRoomPasswordInput.hidden = true;
 			break;
 
 		case "join-private-room":
 			joinPrivateRoomPage.style.display = "block";
+
 			// reset
+			roomPasswordInput.value = "";
+			incorrectMessage.hidden = true;
 			break;
 
 		case "chatroom":

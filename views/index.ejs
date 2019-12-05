@@ -17,29 +17,17 @@
 			<h1>Rooms list</h1>
 		</div>
 
-		<div id="rooms-list">
-			<div class="room-on-list">
-				<h4 class="room-name-on-list">Room name</h4>
-				<h4 class="users-amount-on-list">10 user(s)</h4>
-				<h4 class="room-name-on-list">Public</h4>
-			</div>
-			<div class="room-on-list">
-				<h4 class="room-name-on-list">Room name</h4>
-				<h4 class="users-amount-on-list">10 user(s)</h4>
-				<h4 class="room-name-on-list">Public</h4>
-			</div>
-		</div>
+		<div id="rooms-list"></div>
 
 		<div>
 			<input type="text" name="username" id="username-input" placeholder="Your username" required>
 		</div>
 
 		<div>
-			<button>Create Room</button>
-			<button>Refresh</button>
+			<button id="create-btn">Create Room</button>
+			<button id="refresh-btn">Refresh</button>
 		</div>
 	</div>
-
 
 	<div id="create-room">
 		<div id="text-shadow-class">
@@ -52,20 +40,24 @@
 			<label>Require Password</label>
 			<input type="checkbox" name="private" id="private-input"><br>
 
-			<input type="text" name="roomPassword" id="create-room-password-input" placeholder="Room Password" required><br>
+			<input type="text" name="roomPassword" id="create-room-password-input" placeholder="Room Password" required disabled><br>
 			<button>Create and join room</button>
 		</form>
+		<button class="leave-button">Back</button>
 	</div>
 
 	<div id="join-private-room">
 		<div id="text-shadow-class">
-			<h1>Joining room: Super duper awesome room!!!</h1>	
+			<h1 id="private-room-text">Joining room: Super private room!!!</h1>	
 		</div>
 
 		<form id="join-private-room-form">
-			<input type="text" name="roomPassword" id="room-password-input" placeholder="Room Password"required><br>
+			<input type="text" name="roomPassword" id="room-password-input" placeholder="Room Password" required>
+			<p id="incorrect-message" hidden>Incorrect password</p>
+			<br>
 			<button>Join room</button>
 		</form>
+		<button class="leave-button">Back</button>
 	</div>
 
 	<div id="chatroom">
