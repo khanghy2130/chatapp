@@ -105,7 +105,7 @@ function refreshRoomsList(socket){
 
 		return {
 			roomID: roomID,
-			roomName: "Name: " + roomsList[roomID].roomName,
+			roomName: roomsList[roomID].roomName,
 			publicity: (roomsList[roomID].roomPassword) ? "Private" : "Public",
 			usersAmount: ua + " user(s)"
 		}

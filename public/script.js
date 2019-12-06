@@ -75,7 +75,7 @@ socket.on('refresh-rooms-list', roomsList => {
 		roomPanel.classList.add("room-on-list");
 		
 		// appending three h4's
-		roomPanel.innerHTML = `<h4>${room.roomName}</h4><h4>${room.usersAmount}</h4><h4>${room.publicity}</h4>`;
+		roomPanel.innerHTML = `<h4>Name: ${room.roomName}</h4><h4>${room.usersAmount}</h4><h4>${room.publicity}</h4>`;
 
 		// when clicked
 		roomPanel.addEventListener("click", e => {
