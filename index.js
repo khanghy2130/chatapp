@@ -155,21 +155,22 @@ function joiningRoom (socket, name, roomID, roomPassword){
 		return;
 	}
 
+	// set properties for that user
 	usersList[socket.id].name = name;
 	usersList[socket.id].roomID = roomID;
 
 	socket.join(roomID);
-	socket.emit('join-room', name, roomID); // notify the client
+	socket.emit('join-room', name, roomsList[roomID].roomName); // notify the client
 	socket.to(roomID).emit('announce-new-user', usersList[socket.id].name);
 	updateUsersList(usersList[socket.id].roomID);
 }
 
 // get update of the list of users in a room for that room
 function updateUsersList(roomID){
-	var names = '';
+	var names = [];
 	for (var id in usersList) {
 		if (usersList[id].roomID === roomID){
-			names += usersList[id].name + ", ";
+			names.push(usersList[id].name);
 		}
 	}
 	io.of('chat').to(roomID).emit('update-users-list', names);

@@ -17,13 +17,18 @@
 
 body {
 	text-align: center;
-	height: 100vh;
+	min-height: 100vh;
 
 	background: rgb(191,89,10);
 	background: -moz-linear-gradient(186deg, rgba(191,89,10,1) 15%, rgba(50,30,20,1) 97%);
 	background: -webkit-linear-gradient(186deg, rgba(191,89,10,1) 15%, rgba(50,30,20,1) 97%);
 	background: linear-gradient(186deg, rgba(191,89,10,1) 15%, rgba(50,30,20,1) 97%);
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#bf590a",endColorstr="#131313",GradientType=1);
+}
+
+#text-shadow-class {
+	text-shadow: 2px 2px 3px black;
+	margin-bottom: 10px;
 }
 
 /* JOIN ROOM (MENU) */
@@ -83,18 +88,67 @@ body {
 
 #chatroom {
 	display: none;
-	padding-top: 5vh;
+	padding-top: 3vh;
 }
 
-#chatroom input {
-	width: 60%;
-	margin: 0;
-}
-
-#text-shadow-class {
-	text-shadow: 2px 2px 3px black;
+#room-info-div {
+	display: inline-block;
+	width: 80vw;
+	max-width: 650px;
 	margin-bottom: 10px;
 }
+
+/* h3 username and h3 room name */
+#room-info-div > h3 {
+	display: inline-block;
+	background-color: var(--dark-color);
+	border: var(--light-color) 2px solid;
+	margin: 0 8px 5px;
+	padding: 10px;
+}
+
+#show-users-list-info {
+	display: inline-block;
+	background-color: var(--dark-color);
+	border: var(--light-color) 2px solid;
+	text-align: left;
+
+	padding: 10px;
+	width: 100%;
+	max-width: 500px;
+}
+
+#show-users-list-info > h3, #show-users-list-btn {
+	display: inline-block;
+	margin: 0 5px;
+	padding: 4px;
+	font-size: 0.8em;
+}
+#show-users-list-btn {
+	float: right;
+}
+
+#users-list {
+	overflow: hidden;
+	margin-top: 10px;
+	transition: all 0.9s;
+}
+.collapsed-users-list {
+	max-height: 0px;
+}
+
+/* each name in users list */
+#users-list > p {
+	display: inline-block;
+	padding: 5px 20px;
+	margin-left: 5px;
+	margin-right: 15px;
+	margin-bottom: 5px;
+
+	color: var(--dark-color);
+	background-color: var(--light-color);
+}
+
 
 #chatbox {
 	display:inline-block;
@@ -158,6 +212,10 @@ body {
 	color: #dfdfdf;
 }
 
+#chatroom input {
+	width: 60%;
+	margin: 0;
+}
 
 .leave-button {
 	background-color: var(--red-color);

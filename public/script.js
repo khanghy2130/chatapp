@@ -25,14 +25,16 @@ const joinPrivateRoomPage = document.getElementById("join-private-room"),
 
 // chat room
 const chatRoomPage = document.getElementById("chatroom"),
-	usersList = document.getElementById("users-list"),
 	messageContainer = document.getElementById('messages-container'),
 	messageForm = document.getElementById('send-container'),
 	messageInput = document.getElementById("message-input"),
 	usernameText = document.getElementById("username-text"),
-	roomIdText = document.getElementById("roomId-text");
+	roomNameText = document.getElementById("room-name-text"),
+	usersListShowBtn = document.getElementById("show-users-list-btn"),
+	usersList = document.getElementById("users-list");
 
 let privateRoomID; // used to hold selected roomID
+let showingUsersList = false;
 
 // INITIALIZE
 socket.emit("add-user");
@@ -134,12 +136,27 @@ socket.on("room-not-found", () => {
 
 // ------------------ CHAT ROOM --------------------
 
-// when joined  //////////// get room info (name, pass)
-socket.on('join-room', (name, roomID) => {
+// when successfully joined the room
+socket.on('join-room', (name, roomName) => {
 	loadPage("chatroom");
 	usernameText.innerText = "Your username: " + name;
-	roomIdText.innerText = "Room ID: " + roomID;
+	roomNameText.innerText = "Room name: " + roomName;
 	appendMessage("user-join", 'You joined.');
+});
+
+// when click Show/Hide
+usersListShowBtn.addEventListener("click", () => {
+	if (showingUsersList){
+		// hiding
+		showingUsersList = false;
+		usersListShowBtn.innerText = "Show";
+		usersList.classList.add("collapsed-users-list");
+	} else {
+		// showing
+		showingUsersList = true;
+		usersListShowBtn.innerText = "Hide";
+		usersList.classList.remove("collapsed-users-list");
+	}
 });
 
 // when click send message
@@ -156,7 +173,13 @@ messageForm.addEventListener('submit', event => {
 
 // recieves data about who joined
 socket.on('update-users-list', names => {
-	usersList.innerText = "Users in room: " + names.substring(0, names.length - 2);
+	// clear usernames
+	while(usersList.firstChild){
+		usersList.removeChild(usersList.firstChild);
+	}
+	names.forEach(n => {
+		usersList.innerHTML += `<p>${n}</p>`;
+	});
 });
 
 socket.on('announce-new-user', name => {
@@ -223,6 +246,10 @@ function loadPage(page) {
 		case "chatroom":
 			chatRoomPage.style.display = "block";
 
+			// reset
+			showingUsersList = false;
+			usersListShowBtn.innerText = "Show";
+			usersList.classList.add("collapsed-users-list");
 			// clear messages
 			while(messageContainer.firstChild){
 				messageContainer.removeChild(messageContainer.firstChild);

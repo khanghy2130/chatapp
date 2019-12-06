@@ -7,6 +7,7 @@
 	<script defer src="script.js"></script>
 
 	<link rel="stylesheet" href="/style.css">
+	<link rel="icon" href="/icon.png">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
@@ -48,7 +49,7 @@
 
 	<div id="join-private-room">
 		<div id="text-shadow-class">
-			<h1 id="private-room-text">Joining room: Super private room!!!</h1>	
+			<h1 id="private-room-text"></h1>	
 		</div>
 
 		<form id="join-private-room-form">
@@ -62,12 +63,18 @@
 
 	<div id="chatroom">
 
-		<div id="text-shadow-class">
-			<p id="roomId-text"></p>
-			<p id="users-list"></p>
-			<p id="username-text"></p>
-		</div>
+		<div id="room-info-div">
+			<h3 id="room-name-text">Room name: </h3>
+			<h3 id="username-text">Your username: </h3>
 
+			<div id="show-users-list-info">
+				<h3>List of users in room</h3>
+				<button id="show-users-list-btn">Show</button>
+				<div id="users-list"><p>epicgamer</p><p>epicgamer</p><p>epicgamer</p></div>
+			</div>
+			
+		</div>
+		<br>
 		<div id=chatbox>
 			<div id="messages-container"></div>
 			<form id="send-container">
