@@ -48,8 +48,9 @@ chat.on("connection", socket => {
 		delete usersList[socket.id]; // remove from usersList
 	});
 
+	// client will request this on load only
 	socket.on('refresh-rooms-list', () => {
-		refreshRoomsList(socket);
+		refreshRoomsList();
 	});
 
 	socket.on('create-room', (name, roomName, roomPassword) => {
@@ -90,7 +91,7 @@ chat.on("connection", socket => {
 
 
 
-function refreshRoomsList(socket){
+function refreshRoomsList(){
 	let roomIDs = Object.keys(roomsList);
 
 	// each is {roomID, roomName, usersAmount, publicity}
@@ -110,7 +111,7 @@ function refreshRoomsList(socket){
 			usersAmount: ua + " user(s)"
 		}
 	});
-	socket.emit('refresh-rooms-list', data);
+	io.of("chat").emit('refresh-rooms-list', data);
 }
 
 // create the room then return its roomID
@@ -126,6 +127,7 @@ function creatingRoom(roomName, roomPassword){
 		roomPassword: roomPassword
 	};
 
+	refreshRoomsList();
 	return roomID;
 }
 
@@ -139,6 +141,7 @@ function checkRemoveRoom(roomID){
 	}
 
 	delete roomsList[roomID]; // remove room from list because it's empty
+	refreshRoomsList();
 }
 
 // join a room, if room is private then check password

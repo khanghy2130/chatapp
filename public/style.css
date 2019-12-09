@@ -47,7 +47,6 @@ body {
 	max-width: 600px;
 
 	background: rgba(0,0,0, 0.3);
-	
 }
 
 /* 'no room found' message */
@@ -218,7 +217,7 @@ body {
 .leave-button {
 	background-color: var(--red-color);
 	color: var(--light-color);
-	font-size: 0.7em;
+	font-size: 0.85em;
 }
 
 h1 {
