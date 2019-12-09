@@ -10,7 +10,7 @@
 	padding: 0;
 	box-sizing: border-box;
 
-	font-size: 20px;
+	font-size: 16px;
 	font-family: Arial;
 	color: var(--light-color);
 }
@@ -122,7 +122,6 @@ body {
 	display: inline-block;
 	margin: 0 5px;
 	padding: 4px;
-	font-size: 0.8em;
 }
 #show-users-list-btn {
 	float: right;
@@ -140,10 +139,9 @@ body {
 /* each name in users list */
 #users-list > p {
 	display: inline-block;
-	padding: 5px 20px;
-	margin-left: 5px;
-	margin-right: 15px;
-	margin-bottom: 5px;
+	padding: 5px;
+	margin: 0 15px 5px 5px;
+	font-size: 0.9em;
 
 	color: var(--dark-color);
 	background-color: var(--light-color);
