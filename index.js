@@ -35,8 +35,9 @@ chat.on("connection", socket => {
 	});
 
 	socket.on('disconnect', () => {
-		var roomID = usersList[socket.id].roomID;
+		if (isNotInUsersList(socket)) return; // stop if user is not in list
 
+		var roomID = usersList[socket.id].roomID;
 		// announce leaving if in a room
 		if (roomID){
 			usersList[socket.id].roomID = null;
@@ -54,6 +55,8 @@ chat.on("connection", socket => {
 	});
 
 	socket.on('create-room', (name, roomName, roomPassword) => {
+		if (isNotInUsersList(socket)) return; // stop if user is not in list
+
 		// create the room (with return value of roomID)
 		let roomID = creatingRoom(roomName, roomPassword);
 
@@ -62,11 +65,20 @@ chat.on("connection", socket => {
 	});
 
 	socket.on('join-room', (name, roomID, roomPassword) => {
+		if (isNotInUsersList(socket)) return; // stop if user is not in list
+
 		joiningRoom(socket, name, roomID, roomPassword);
 	});
 
 	// announce leaving, update users list and remove roomID from user object
 	socket.on('leave-room', () => {
+		if (isNotInUsersList(socket)) return; // stop if user is not in list
+
+		if (!usersList[socket.id]){
+			socket.emit("force-disconnect");
+			return;
+		}
+
 		var roomID = usersList[socket.id].roomID;
 
 		// if is actually in a room
@@ -81,6 +93,8 @@ chat.on("connection", socket => {
 
 	// when server recieves message from this user
 	socket.on('chat-message', message => {
+		if (isNotInUsersList(socket)) return; // stop if user is not in list
+
 		var messageObject = {
 			name: usersList[socket.id].name, 
 			message: message
@@ -179,8 +193,16 @@ function updateUsersList(roomID){
 	io.of('chat').to(roomID).emit('update-users-list', names);
 }
 
-// when a user leaves, check if the room is empty then remove it from rooms list
-
+// check if user doesn't exist in usersList => force disconnect if true
+function isNotInUsersList(socket){
+	// if the user object is null
+	if (!usersList[socket.id]){
+		socket.emit("force-disconnect");
+		socket.disconnect();
+		return true;
+	}
+	return false;
+}
 
 // to create roomID
 function create_UUID(){
@@ -197,6 +219,9 @@ function create_UUID(){
 server.listen(PORT);
 
 /*  EMIT KEYS
+
+server to client: 
+	force-disconnect (when connecting user isn't included in usersList)
 
 JOIN ROOM:
 	client to server: 

@@ -49,6 +49,10 @@ for (let i = 0; i < leaveButtons.length; i++){
 	});
 }
 
+// being forced to disconnect
+socket.on("force-disconnect", () => {
+	document.body.innerHTML = "<h1>You have been disconnected, please reload the page.</h1>";
+});
 
 // ------------------ JOIN ROOM -----------------
 
